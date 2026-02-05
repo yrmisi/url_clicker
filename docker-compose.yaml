@@ -1,0 +1,120 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      pgbouncer:
+        condition: service_started
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://web:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - my_network
+  nginx:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      web:
+        condition: service_started
+    networks:
+      - my_network
+  db:
+    image: postgres:17-alpine
+    restart: on-failure # The policy restarts the container if the exit code indicates an error.
+    env_file:
+      - .env
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scott -d clicker"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+  pgbouncer:
+    image: edoburu/pgbouncer:latest
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${PGBOUNCER_DATABASE_URL}
+      MAX_CLIENT_CONN: ${MAX_CLIENT_CONN}
+      DEFAULT_POOL_SIZE: ${DEFAULT_POOL_SIZE}
+      RESERVE_POOL_SIZE: ${RESERVE_POOL_SIZE}
+      SERVER_IDLE_TIMEOUT: ${SERVER_IDLE_TIMEOUT}
+      AUTH_TYPE: ${AUTH_TYPE}
+      POOL_MODE: ${POOL_MODE}
+    ports:
+      - "6432:5432"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - my_network
+  dbtest:
+    image: postgres:17-alpine
+    restart: on-failure # The policy restarts the container if the exit code indicates an error.
+    env_file:
+      - .env.test
+    ports:
+      - "5436:5432"
+    networks:
+      - my_network
+  redis:
+    image: redis:8.2-bookworm
+    restart: unless-stopped
+    env_file:
+    - .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+    - my_network
+  redistest:
+    image: redis:8.2-bookworm
+    restart: unless-stopped
+    env_file:
+    - .env
+    ports:
+      - "6378:6379"
+    depends_on:
+      - dbtest
+    networks:
+    - my_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  my_network:
+    driver: bridge
