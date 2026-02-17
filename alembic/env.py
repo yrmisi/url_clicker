@@ -37,8 +37,11 @@ _ = [
 from src.config import settings
 
 driver_for_alembic = "psycopg2"
-host_for_alembic = "localhost"
-port_for_alembic = 5435
+host_for_alembic = "db"
+port_for_alembic = 5432
+# local
+# host_for_alembic = "localhost"
+# port_for_alembic = 5435
 config.set_main_option(
     "sqlalchemy.url",
     settings.db.sqal_pg_url(
