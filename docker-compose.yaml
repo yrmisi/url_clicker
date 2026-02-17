@@ -2,7 +2,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker_build/src/Dockerfile
     container_name: web
     restart: unless-stopped
     env_file:
@@ -27,7 +27,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: frontend/Dockerfile
+      dockerfile: docker_build/frontend/Dockerfile
     container_name: nginx
     restart: unless-stopped
     ports:
