@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: web
     restart: unless-stopped
     env_file:
       - .env
@@ -27,6 +28,7 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -37,6 +39,7 @@ services:
       - my_network
   db:
     image: postgres:17-alpine
+    container_name: db
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
       - .env
@@ -54,6 +57,7 @@ services:
       - my_network
   pgbouncer:
     image: edoburu/pgbouncer:v1.25.1-p0
+    container_name: pgbouncer
     env_file:
       - .env
     environment:
@@ -73,6 +77,7 @@ services:
       - my_network
   dbtest:
     image: postgres:17-alpine
+    container_name: dbtest
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
       - .env.test
@@ -82,6 +87,7 @@ services:
       - my_network
   redis:
     image: redis:8.2-bookworm
+    container_name: redis
     restart: unless-stopped
     env_file:
     - .env
@@ -101,6 +107,7 @@ services:
     - my_network
   redistest:
     image: redis:8.2-bookworm
+    container_name: redistest
     restart: unless-stopped
     env_file:
     - .env
