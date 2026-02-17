@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+from .alembic import AlembicMigrationConfig
 from .database import DataBaseConfig
 from .database_test import DataBaseTestConfig
 from .redis import RedisConfig
@@ -13,6 +14,7 @@ class Settings(BaseModel):
     dbtest: DataBaseTestConfig = DataBaseTestConfig()
     redis_db: RedisConfig = RedisConfig()
     redis_test: RedisTestConfig = RedisTestConfig()
+    abm: AlembicMigrationConfig = AlembicMigrationConfig()
 
 
 settings = Settings()
