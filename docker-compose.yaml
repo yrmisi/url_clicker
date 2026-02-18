@@ -10,12 +10,10 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      db:
-        condition: service_healthy
       pgbouncer:
-        condition: service_started
+        condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://web:8000/health"]
       interval: 30s
@@ -32,6 +30,12 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
     depends_on:
       web:
         condition: service_healthy
@@ -46,7 +50,7 @@ services:
     ports:
       - "5435:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U scott -d clicker"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -73,16 +77,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - my_network
-  dbtest:
-    image: postgres:17-alpine
-    container_name: dbtest
-    restart: on-failure # The policy restarts the container if the exit code indicates an error.
-    env_file:
-      - .env.test
-    ports:
-      - "5436:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - my_network
   redis:
@@ -100,23 +100,32 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
     - my_network
+  dbtest:
+    image: postgres:17-alpine
+    container_name: db-test
+    restart: on-failure # The policy restarts the container if the exit code indicates an error.
+    env_file:
+      - .env.test
+    ports:
+      - "5436:5432"
+    networks:
+      - my_network
+    profiles:
+      - test
   redistest:
     image: redis:8.2-bookworm
-    container_name: redistest
+    container_name: redis-test
     restart: unless-stopped
     env_file:
     - .env
     ports:
       - "6378:6379"
-    depends_on:
-      - dbtest
     networks:
     - my_network
+    profiles:
+      - test
 
 volumes:
   postgres_data:
