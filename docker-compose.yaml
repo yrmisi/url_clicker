@@ -6,7 +6,10 @@ services:
     container_name: web
     restart: unless-stopped
     env_file:
-      - .env
+      - src/config/envs/.env.base
+      - src/config/envs/.env.postgres
+      - src/config/envs/.env.pgbouncer
+      - src/config/envs/.env.redis
     ports:
       - "8000:8000"
     depends_on:
@@ -46,11 +49,11 @@ services:
     container_name: db
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
-      - .env
+      - src/config/envs/.env.postgres
     ports:
       - "5435:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -63,22 +66,14 @@ services:
     image: edoburu/pgbouncer:v1.25.1-p0
     container_name: pgbouncer
     env_file:
-      - .env
-    environment:
-      DATABASE_URL: ${PGBOUNCER_DATABASE_URL}
-      MAX_CLIENT_CONN: ${MAX_CLIENT_CONN}
-      DEFAULT_POOL_SIZE: ${DEFAULT_POOL_SIZE}
-      RESERVE_POOL_SIZE: ${RESERVE_POOL_SIZE}
-      SERVER_IDLE_TIMEOUT: ${SERVER_IDLE_TIMEOUT}
-      AUTH_TYPE: ${AUTH_TYPE}
-      POOL_MODE: ${POOL_MODE}
+      - src/config/envs/.env.pgbouncer
     ports:
       - "6432:5432"
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -h db -p 5432 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -90,7 +85,7 @@ services:
     container_name: redis
     restart: unless-stopped
     env_file:
-    - .env
+    - src/config/envs/.env.redis
     ports:
       - "6379:6379"
     volumes:
@@ -107,7 +102,7 @@ services:
     container_name: db-test
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
-      - .env.test
+      - src/config/envs/.env.test
     ports:
       - "5436:5432"
     networks:
@@ -119,7 +114,7 @@ services:
     container_name: redis-test
     restart: unless-stopped
     env_file:
-    - .env
+    - src/config/envs/.env.redis
     ports:
       - "6378:6379"
     networks:

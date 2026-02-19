@@ -40,8 +40,8 @@ RUN apt-get update && \
 
 COPY --from=builder /app/ /app/
 
-RUN groupadd -r -g 1000 appuser && \
-    useradd -r -u 1000 -g appuser appuser && \
+RUN groupadd --gid 1000 appuser && \
+    useradd --uid 1000 --gid appuser --no-create-home appuser && \
     chown -R appuser:appuser /app
 
 USER appuser
