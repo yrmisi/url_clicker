@@ -68,3 +68,7 @@ Makefile  # ← только если не используется в конт�
 # Локальные конфиги
 config/local/
 local_settings.py
+
+# Project files
+src/config/envs
+src/config/envs_template

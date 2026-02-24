@@ -5,6 +5,8 @@ from pathlib import Path
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
+from src.config import settings
+from src.database import Base, ShortURL
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +25,6 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from src.database import Base, ShortURL
 
 target_metadata = Base.metadata
 _ = [
@@ -34,18 +35,14 @@ _ = [
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-from src.config import settings
 
-driver_for_alembic = "psycopg2"
-host_for_alembic = "localhost"
-port_for_alembic = 5435
 config.set_main_option(
     "sqlalchemy.url",
     settings.db.sqal_pg_url(
-        driver_for_alembic,
-        host_for_alembic,
-        port_for_alembic,
-    ),
+        settings.abm.driver,
+        settings.abm.host,
+        settings.abm.port,
+    ).render_as_string(hide_password=False),
 )
 
 
