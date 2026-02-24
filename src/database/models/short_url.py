@@ -15,12 +15,6 @@ class ShortURL(Base):
     long_url: Mapped[str] = mapped_column(String(length=2048))
     creation_count: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     click_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-        server_default=func.now(),
-        default=datetime.now,
-        nullable=False,
-    )
     last_accessed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
