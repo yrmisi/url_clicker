@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from src.config import settings
-from src.database import Base, ShortURL, AnonymousClick
+from src.database.models import Base, ShortURL, AnonymousClick
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

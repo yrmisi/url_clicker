@@ -8,7 +8,8 @@ from sqlalchemy.pool import NullPool
 
 from src.config import settings
 from src.core import get_redis
-from src.database import Base, get_async_session
+from src.database import get_async_session
+from src.database.models import Base
 from src.main import app
 
 engine = create_async_engine(

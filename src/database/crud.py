@@ -7,7 +7,7 @@ from src.exceptions import SlugAlreadyExistsDBError
 from src.utils import SlugCountInfo
 
 from .db_config import AsyncSessionDep
-from .models.short_url import ShortURL
+from .models import ShortURL
 
 
 async def add_slug_to_db(slug: str, long_url: str, session: AsyncSessionDep) -> None:

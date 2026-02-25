@@ -3,7 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from src.core import get_redis
-from src.database import Base, engine
+from src.database import engine
+from src.database.models import Base
 from src.routers import router_slug
 
 
