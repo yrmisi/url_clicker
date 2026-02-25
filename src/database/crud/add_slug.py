@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from src.dependencies import ClickDataDep
 from src.exceptions import SlugAlreadyExistsDBError
 
-from ..db_config import AsyncSessionDep
+from ..dependencies import AsyncSessionDep
 from ..models import ShortURL
 from .anonymous_click import add_anonymous_click_db
 

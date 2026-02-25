@@ -2,7 +2,7 @@ from sqlalchemy import select
 
 from src.schemas import SlugCountInfo
 
-from ..db_config import AsyncSessionDep
+from ..dependencies import AsyncSessionDep
 from ..models import ShortURL
 
 

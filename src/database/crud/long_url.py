@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select
 
-from ..db_config import AsyncSessionDep
+from ..dependencies import AsyncSessionDep
 from ..models import ShortURL
 
 
