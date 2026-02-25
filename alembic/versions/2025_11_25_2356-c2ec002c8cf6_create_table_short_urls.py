@@ -35,7 +35,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("last_accessed_at", sa.DateTime(timezone=True), nullable=True),
-        sa.PrimaryKeyConstraint("id", "slug"),
+        sa.PrimaryKeyConstraint("id"),
     )
     # ### end Alembic commands ###
 
