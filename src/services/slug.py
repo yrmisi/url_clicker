@@ -1,9 +1,15 @@
-from src.database import AsyncSessionDep, add_slug_to_db, get_slug_and_count_by_long_url_from_db
+from src.database import AsyncSessionDep
+from src.database.crud import add_slug_to_db, get_slug_and_count_by_long_url_from_db
+from src.dependencies import ClickDataDep
 from src.exceptions import InvalidURLError, SlugAlreadyExistsDBError
 from src.utils import SlugCountInfo, generate_slug, is_valid_url
 
 
-async def get_slug(url: str, session: AsyncSessionDep) -> SlugCountInfo:
+async def get_slug(
+    url: str,
+    click_data: ClickDataDep,
+    session: AsyncSessionDep,
+) -> SlugCountInfo:
     """ """
     cleaned_url = url.strip().rstrip("/")
 
@@ -19,7 +25,7 @@ async def get_slug(url: str, session: AsyncSessionDep) -> SlugCountInfo:
 
     slug: str = generate_slug()
     try:
-        await add_slug_to_db(slug, cleaned_url, session)
+        await add_slug_to_db(slug, cleaned_url, click_data, session)
     except SlugAlreadyExistsDBError as exc:
         raise exc
     return SlugCountInfo(slug=slug, creation_count=1)

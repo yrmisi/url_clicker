@@ -1,4 +1,5 @@
-from src.database import AsyncSessionDep, get_long_url_by_slug_from_db
+from src.database import AsyncSessionDep
+from src.database.crud import get_long_url_by_slug_from_db
 from src.exceptions import NoLongFoundError
 
 

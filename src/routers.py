@@ -5,7 +5,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import RedirectResponse
 
 from src.database import AsyncSessionDep
-from src.dependencies import rate_limit_short_url
+from src.dependencies import ClickDataDep, rate_limit_short_url
 from src.exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
 from src.services import get_long_url, get_slug
 from src.utils import SlugCountInfo
@@ -20,12 +20,13 @@ router_slug: APIRouter = APIRouter()
 )
 async def generate_slug(
     long_url: Annotated[str, Body(embed=True)],
+    click_data: ClickDataDep,
     session: AsyncSessionDep,
 ) -> dict[str, str | int]:
     """ """
     for attempt in range(5):
         try:
-            slug_count: SlugCountInfo = await get_slug(long_url, session)
+            slug_count: SlugCountInfo = await get_slug(long_url, click_data, session)
             return {
                 "link": f"http://localhost/api/{slug_count.slug}",
                 "creation_count": slug_count.creation_count,
