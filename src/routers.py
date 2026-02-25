@@ -7,8 +7,8 @@ from fastapi.responses import RedirectResponse
 from src.database import AsyncSessionDep
 from src.dependencies import ClickDataDep, rate_limit_short_url
 from src.exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
+from src.schemas import SlugCountInfo
 from src.services import get_long_url, get_slug
-from src.utils import SlugCountInfo
 
 router_slug: APIRouter = APIRouter()
 

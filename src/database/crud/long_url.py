@@ -6,7 +6,7 @@ from ..db_config import AsyncSessionDep
 from ..models import ShortURL
 
 
-async def get_long_url_by_slug_from_db(slug: str, session: AsyncSessionDep) -> str | None:
+async def get_long_url_by_slug_db(slug: str, session: AsyncSessionDep) -> str | None:
     """ """
     # query = select(ShortURL).where(ShortURL.slug==slug)
     query = select(ShortURL).filter_by(slug=slug)

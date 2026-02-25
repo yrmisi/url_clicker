@@ -8,7 +8,7 @@ from ..models import ShortURL
 from .anonymous_click import add_anonymous_click_db
 
 
-async def add_slug_to_db(
+async def add_slug_db(
     slug: str,
     long_url: str,
     click_data: ClickDataDep,

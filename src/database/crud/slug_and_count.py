@@ -1,12 +1,12 @@
 from sqlalchemy import select
 
-from src.utils import SlugCountInfo
+from src.schemas import SlugCountInfo
 
 from ..db_config import AsyncSessionDep
 from ..models import ShortURL
 
 
-async def get_slug_and_count_by_long_url_from_db(
+async def get_slug_and_count_by_long_url_db(
     long_url: str,
     session: AsyncSessionDep,
 ) -> SlugCountInfo | None:
