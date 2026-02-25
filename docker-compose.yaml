@@ -45,7 +45,7 @@ services:
     networks:
       - my_network
   db:
-    image: postgres:17-alpine
+    image: postgres:18.2-alpine
     container_name: db
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
@@ -59,7 +59,7 @@ services:
       retries: 5
       start_period: 40s
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     networks:
       - my_network
   pgbouncer:
@@ -89,7 +89,7 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./redis_data:/data
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
