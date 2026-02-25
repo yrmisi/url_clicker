@@ -98,7 +98,7 @@ services:
     networks:
     - my_network
   dbtest:
-    image: postgres:17-alpine
+    image: postgres:18.2-alpine
     container_name: db-test
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
