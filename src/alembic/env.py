@@ -31,7 +31,7 @@ _ = [
 
 config.set_main_option(
     "sqlalchemy.url",
-    settings.db.sqal_pg_url.render_as_string(hide_password=False),
+    settings.db.url_sqal_pg_async.render_as_string(hide_password=False),
 )
 
 # other values from the config, defined by the needs of env.py,

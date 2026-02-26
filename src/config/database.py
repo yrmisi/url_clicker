@@ -24,7 +24,7 @@ class DataBaseConfig(BaseSettings):
     )
 
     @property
-    def sqal_pg_url(self) -> URL:
+    def url_sqal_pg_async(self) -> URL:
         """Create a URL to connect to the database."""
         return URL.create(
             drivername=f"postgresql+{self.driver}",

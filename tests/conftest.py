@@ -13,7 +13,7 @@ from src.database.models import Base
 from src.main import app
 
 engine = create_async_engine(
-    settings.dbtest.sqal_pg_url(),
+    settings.dbtest.url_sqal_pg_async,
     poolclass=NullPool,  # важно для тестов!
 )
 
