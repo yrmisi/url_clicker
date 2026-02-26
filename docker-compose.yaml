@@ -9,7 +9,7 @@ services:
       - src/config/envs/.env.base
       - src/config/envs/.env.app-dev
       - src/config/envs/.env.postgres-prod
-      - src/config/envs/.env.pgbouncer
+      - src/config/envs/.env.pgbouncer-prod
       - src/config/envs/.env.redis-prod
     ports:
       - "8000:8000"
@@ -67,7 +67,7 @@ services:
     image: edoburu/pgbouncer:v1.25.1-p0
     container_name: pgbouncer
     env_file:
-      - src/config/envs/.env.pgbouncer
+      - src/config/envs/.env.pgbouncer-prod
     ports:
       - "6432:5432"
     depends_on:

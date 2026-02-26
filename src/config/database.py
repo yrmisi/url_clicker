@@ -18,7 +18,7 @@ class DataBaseConfig(BaseSettings):
     driver: str = "asyncpg"
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / ".env.postgres-dev",
+        env_file=BASE_DIR / "envs" / ".env.postgres-prod",
         env_file_encoding="utf-8",
         extra="ignore",
     )

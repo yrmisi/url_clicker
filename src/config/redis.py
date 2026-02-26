@@ -17,7 +17,7 @@ class RedisConfig(BaseSettings):
     short_url_window: int = 5
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / ".env.redis",
+        env_file=BASE_DIR / "envs" / ".env.redis-prod",
         env_file_encoding="utf-8",
         extra="ignore",
     )
