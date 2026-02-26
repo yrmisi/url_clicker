@@ -1,9 +1,9 @@
-from src.database import AsyncSessionDep
-from src.database.crud import add_slug_db, get_slug_and_count_by_long_url_db
-from src.dependencies import ClickDataDep
-from src.exceptions import InvalidURLError, SlugAlreadyExistsDBError
-from src.schemas import SlugCountInfo
-from src.utils import generate_slug, is_valid_url
+from database import AsyncSessionDep
+from database.crud import add_slug_db, get_slug_and_count_by_long_url_db
+from dependencies import ClickDataDep
+from exceptions import InvalidURLError, SlugAlreadyExistsDBError
+from schemas import SlugCountInfo
+from utils import generate_slug, is_valid_url
 
 
 async def get_slug(

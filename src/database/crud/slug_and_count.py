@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from src.schemas import SlugCountInfo
+from schemas import SlugCountInfo
 
 from ..dependencies import AsyncSessionDep
 from ..models import ShortURL

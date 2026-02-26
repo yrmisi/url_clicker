@@ -17,7 +17,7 @@ class RedisTestConfig(BaseSettings):
     short_url_window: int = 5
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / ".env.test",
+        env_file=BASE_DIR / "envs" / ".env.redis-dev",
         env_file_encoding="utf-8",
         extra="ignore",
     )

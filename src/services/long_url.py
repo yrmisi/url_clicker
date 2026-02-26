@@ -1,6 +1,6 @@
-from src.database import AsyncSessionDep
-from src.database.crud import get_long_url_by_slug_db
-from src.exceptions import NoLongFoundError
+from database import AsyncSessionDep
+from database.crud import get_long_url_by_slug_db
+from exceptions import NoLongFoundError
 
 
 async def get_long_url(slug: str, session: AsyncSessionDep) -> str:

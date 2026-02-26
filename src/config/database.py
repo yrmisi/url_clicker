@@ -18,26 +18,19 @@ class DataBaseConfig(BaseSettings):
     driver: str = "asyncpg"
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / ".env.postgres",
+        env_file=BASE_DIR / "envs" / ".env.postgres-prod",
         env_file_encoding="utf-8",
         extra="ignore",
     )
 
-    def sqal_pg_url(
-        self,
-        driver_override: str | None = None,
-        host_override: str | None = None,
-        port_override: int | None = None,
-    ) -> URL:
+    @property
+    def url_sqal_pg_async(self) -> URL:
         """Create a URL to connect to the database."""
-        driver = driver_override or self.driver
-        host = host_override or self.host
-        port = port_override or self.port
         return URL.create(
-            drivername=f"postgresql+{driver}",
+            drivername=f"postgresql+{self.driver}",
             username=self.user,
             password=self.password,
-            host=host,
-            port=port,
+            host=self.host,
+            port=self.port,
             database=self.name,
         )

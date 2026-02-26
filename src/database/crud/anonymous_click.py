@@ -1,6 +1,6 @@
 from dataclasses import asdict
 
-from src.dependencies import ClickDataDep
+from dependencies import ClickDataDep
 
 from ..dependencies import AsyncSessionDep
 from ..models import AnonymousClick
