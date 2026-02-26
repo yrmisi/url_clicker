@@ -7,9 +7,10 @@ services:
     restart: unless-stopped
     env_file:
       - src/config/envs/.env.base
-      - src/config/envs/.env.postgres
+      - src/config/envs/.env.app-dev
+      - src/config/envs/.env.postgres-prod
       - src/config/envs/.env.pgbouncer
-      - src/config/envs/.env.redis
+      - src/config/envs/.env.redis-prod
     ports:
       - "8000:8000"
     depends_on:
@@ -49,7 +50,7 @@ services:
     container_name: db
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
-      - src/config/envs/.env.postgres
+      - src/config/envs/.env.postgres-prod
     ports:
       - "5435:5432"
     healthcheck:
@@ -85,7 +86,7 @@ services:
     container_name: redis
     restart: unless-stopped
     env_file:
-    - src/config/envs/.env.redis
+    - src/config/envs/.env.redis-prod
     ports:
       - "6379:6379"
     volumes:
@@ -102,7 +103,7 @@ services:
     container_name: db-test
     restart: on-failure # The policy restarts the container if the exit code indicates an error.
     env_file:
-      - src/config/envs/.env.test
+      - src/config/envs/.env.postgres-test
     ports:
       - "5436:5432"
     networks:
@@ -114,7 +115,7 @@ services:
     container_name: redis-test
     restart: unless-stopped
     env_file:
-    - src/config/envs/.env.redis
+    - src/config/envs/.env.redis-dev
     ports:
       - "6378:6379"
     networks:
