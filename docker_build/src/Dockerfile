@@ -15,9 +15,7 @@ COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project
 
-COPY src/ ./src/
-COPY alembic/ ./alembic/
-COPY alembic.ini ./
+COPY src/ ./
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
@@ -50,7 +48,7 @@ EXPOSE 8000
 
 ENTRYPOINT [ "/app/scripts/entrypoint.sh" ]
 
-CMD ["granian", "--interface", "asgi", "src.main:app", \
+CMD ["granian", "--interface", "asgi", "main:app", \
     "--workers", "2", \
     "--host", "0.0.0.0", \
     "--port", "8000", \
