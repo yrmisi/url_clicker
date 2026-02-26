@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from src.config import settings
+from config import settings
 
 engine = create_async_engine(
-    settings.db.sqal_pg_url(),
+    settings.db.sqal_pg_url,
     pool_size=10,  # базовое количество открытых соединений
     max_overflow=0,  # 0 для безопасности (не превышать лимит пула), 5 - макс. доп. соединений сверх pool_size
     pool_pre_ping=True,  # проверяет соединение перед использованием (избегает "broken pipe")

@@ -2,7 +2,7 @@ from functools import lru_cache
 
 from redis.asyncio import Redis
 
-from src.config import settings
+from config import settings
 
 
 @lru_cache

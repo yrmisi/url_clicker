@@ -14,7 +14,7 @@ class AppConfig(BaseSettings):
     api_prefix: Annotated[str, Field(alias="API_PREFIX")] = "/api"
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / "envs" / ".env.appdev",
+        env_file=BASE_DIR / "envs" / ".env.app-dev",
         env_file_encoding="utf-8",
     )
 

@@ -3,7 +3,7 @@ from typing import Annotated
 
 from fastapi import Depends, Request
 
-from src.schemas import ClickData
+from schemas import ClickData
 
 
 def get_client_ip(request: Request) -> str | None:

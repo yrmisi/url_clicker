@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
-from src.dependencies import ClickDataDep
-from src.exceptions import SlugAlreadyExistsDBError
+from dependencies import ClickDataDep
+from exceptions import SlugAlreadyExistsDBError
 
 from ..dependencies import AsyncSessionDep
 from ..models import ShortURL
