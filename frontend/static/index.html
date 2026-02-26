@@ -83,6 +83,74 @@
         transform: translateY(1px);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
+      /* cookies */
+      .cookie-banner {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 24px;
+        z-index: 10000;
+        max-width: 500px;
+        margin: 0 auto;
+        transform: translateY(100%);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: inherit;
+      }
+      .cookie-banner.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .cookie-content h3 {
+        margin: 0 0 12px 0;
+        color: #333;
+        font-size: 18px;
+      }
+      .cookie-content p {
+        margin: 0 0 20px 0;
+        color: #666;
+        line-height: 1.5;
+      }
+      .cookie-buttons {
+        display: flex;
+        gap: 12px;
+      }
+      .cookie-btn {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .cookie-btn.accept {
+        background: #28a745;
+        color: white;
+      }
+      .cookie-btn.accept:hover {
+        background: #218838;
+      }
+      .cookie-btn.decline {
+        background: #6c757d;
+        color: white;
+      }
+      .cookie-btn.decline:hover {
+        background: #5a6268;
+      }
+      @media (max-width: 600px) {
+        .cookie-banner {
+          bottom: 10px;
+          left: 10px;
+          right: 10px;
+          padding: 20px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -194,6 +262,78 @@
           submitBtn.disabled = false;
         }
       });
+      // Cookies
+      document.addEventListener("DOMContentLoaded", function () {
+        const cookieBanner = document.getElementById("cookieConsent");
+        const acceptBtn = document.getElementById("acceptCookies");
+        const declineBtn = document.getElementById("declineCookies");
+
+        // Показать баннер если нет cookie согласия
+        if (!getCookie("cookies_accepted")) {
+          setTimeout(() => {
+            cookieBanner.classList.add("show");
+          }, 1000);
+        }
+
+        acceptBtn.addEventListener("click", function () {
+          // Устанавливаем разные cookies для трекинга
+          document.cookie =
+            "cookies_accepted=true; path=/; max-age=" + 365 * 24 * 60 * 60;
+          document.cookie =
+            "session_id=" +
+            generateId(16) +
+            "; path=/; max-age=" +
+            24 * 60 * 60;
+          document.cookie =
+            "user_type=shortener_user; path=/; max-age=" + 365 * 24 * 60 * 60;
+          document.cookie =
+            "referrer=" +
+            encodeURIComponent(document.referrer || "") +
+            "; path=/; max-age=" +
+            24 * 60 * 60;
+
+          cookieBanner.classList.remove("show");
+        });
+
+        declineBtn.addEventListener("click", function () {
+          document.cookie =
+            "cookies_accepted=false; path=/; max-age=" + 30 * 24 * 60 * 60;
+          cookieBanner.classList.remove("show");
+        });
+
+        // Функция для чтения cookie
+        function getCookie(name) {
+          const value = "; " + document.cookie;
+          const parts = value.split("; " + name + "=");
+          if (parts.length === 2) return parts.pop().split(";").shift();
+          return null;
+        }
+
+        // Генератор ID для сессии
+        function generateId(length) {
+          const chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          let result = "";
+          for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+          }
+          return result;
+        }
+      });
     </script>
+    <div id="cookieConsent" class="cookie-banner">
+      <div class="cookie-content">
+        <h3>🍪 Мы используем cookies</h3>
+        <p>
+          Этот сайт использует cookies для улучшения работы сервиса и аналитики.
+        </p>
+        <div class="cookie-buttons">
+          <button id="acceptCookies" class="cookie-btn accept">Принять</button>
+          <button id="declineCookies" class="cookie-btn decline">
+            Отклонить
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

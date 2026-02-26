@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from src.config import settings
-from src.database import Base, ShortURL
+from src.database.models import Base, ShortURL, AnonymousClick
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,6 +29,7 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 _ = [
     ShortURL,
+    AnonymousClick,
 ]
 
 # other values from the config, defined by the needs of env.py,

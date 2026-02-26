@@ -1,35 +1,36 @@
+from dataclasses import asdict
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import RedirectResponse
 
+from src.config import settings
 from src.database import AsyncSessionDep
-from src.dependencies import rate_limit_short_url
+from src.dependencies import ClickDataDep, rate_limit_short_url
 from src.exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
+from src.schemas import ShortUrlResponse, SlugCountInfo
 from src.services import get_long_url, get_slug
-from src.utils import SlugCountInfo
 
 router_slug: APIRouter = APIRouter()
 
 
 @router_slug.post(
     "/short_url",
+    response_model=ShortUrlResponse,
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(rate_limit_short_url)],
 )
 async def generate_slug(
     long_url: Annotated[str, Body(embed=True)],
+    click_data: ClickDataDep,
     session: AsyncSessionDep,
 ) -> dict[str, str | int]:
-    """ """
+    """The router receives the website address, generates and returns a short link."""
     for attempt in range(5):
         try:
-            slug_count: SlugCountInfo = await get_slug(long_url, session)
-            return {
-                "link": f"http://localhost/api/{slug_count.slug}",
-                "creation_count": slug_count.creation_count,
-            }
+            slug_count: SlugCountInfo = await get_slug(long_url, click_data, session)
+            return settings.app.get_link_count(**asdict(slug_count))
         except SlugAlreadyExistsDBError:
             if attempt == 4:
                 raise HTTPException(

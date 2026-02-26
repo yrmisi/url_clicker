@@ -1,7 +1,4 @@
-from typing import Annotated, AsyncGenerator
-
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from src.config import settings
 
@@ -29,12 +26,3 @@ engine = create_async_engine(
 )
 
 AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
-
-
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    """ """
-    async with AsyncSessionLocal() as async_session:
-        yield async_session
-
-
-AsyncSessionDep = Annotated[AsyncSession, Depends(get_async_session)]
