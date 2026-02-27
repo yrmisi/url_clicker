@@ -4,7 +4,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
-from .path import BASE_DIR
+from .paths import ENVS_DIR
 
 
 class DataBaseConfig(BaseSettings):
@@ -18,7 +18,7 @@ class DataBaseConfig(BaseSettings):
     driver: str = "asyncpg"
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / "envs" / ".env.postgres-prod",
+        env_file=ENVS_DIR / ".env.postgres-prod",
         env_file_encoding="utf-8",
         extra="ignore",
     )
