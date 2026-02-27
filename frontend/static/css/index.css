@@ -1,0 +1,145 @@
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f9f9f9;
+}
+h1 {
+  text-align: center;
+  color: #333;
+}
+input,
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background: #0b5ed7;
+}
+button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+#result {
+  margin-top: 20px;
+  padding: 12px;
+  background: #e9ecef;
+  border-radius: 4px;
+  word-break: break-all;
+}
+#error {
+  color: #dc3545;
+  margin-top: 10px;
+}
+/* Стили для кнопки копирования */
+#copyBtn {
+  padding: 6px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 14px;
+  min-width: 80px;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+#copyBtn:hover {
+  background-color: #218838;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+#copyBtn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+/* cookies */
+.cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 24px;
+  z-index: 10000;
+  max-width: 500px;
+  margin: 0 auto;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+.cookie-banner.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+.cookie-content h3 {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 18px;
+}
+.cookie-content p {
+  margin: 0 0 20px 0;
+  color: #666;
+  line-height: 1.5;
+}
+.cookie-buttons {
+  display: flex;
+  gap: 12px;
+}
+.cookie-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cookie-btn.accept {
+  background: #28a745;
+  color: white;
+}
+.cookie-btn.accept:hover {
+  background: #218838;
+}
+.cookie-btn.decline {
+  background: #6c757d;
+  color: white;
+}
+.cookie-btn.decline:hover {
+  background: #5a6268;
+}
+@media (max-width: 600px) {
+  .cookie-banner {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 20px;
+  }
+}
