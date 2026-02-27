@@ -36,7 +36,7 @@ curl -X POST "http://localhost/api/short_url" \
 
 ### `POST /api/short_url` 🆕
 
-**Создать короткую ссылку**
+**Создать короткую ссылку** <!-- markdownlint-disable-line MD036 -->
 
 ```bash
 curl -X POST "http://localhost/api/short_url" \
@@ -57,7 +57,7 @@ curl -X POST "http://localhost/api/short_url" \
 
 ### `GET /api/{slug}` ➡️
 
-**Редирект на оригинал**
+**Редирект на оригинал** <!-- markdownlint-disable-line MD036 -->
 
 ```text
 GET /api/abc123 → 302 → https://example.com/very/long/url
@@ -113,11 +113,11 @@ CREATE TABLE short_urls (
 | Поле              | Тип          | Описание                              | Default |
 |-------------------|--------------|---------------------------------------|---------|
 | `slug`            | `VARCHAR(6)` | ✅ **PK** Уникальный короткий код     | -       |
-| `long_url`        | `VARCHAR(2048)` | Полная целевая ссылка             | -       |
+| `long_url`        | `VARCHAR(2048)` | Полная целевая ссылка              | -       |
 | `creation_count`  | `INTEGER`    | 🔄 Сколько раз создана эта ссылка     | `1`     |
 | `click_count`     | `INTEGER`    | 📈 Количество переходов по ссылке     | `0`     |
-| `created_at`      | `TIMESTAMPTZ`| Дата/время создания                  | `NOW()` |
-| `last_accessed_at`| `TIMESTAMPTZ`| Последний переход (nullable)         | `NULL`  |
+| `created_at`      | `TIMESTAMPTZ`| Дата/время создания                   | `NOW()` |
+| `last_accessed_at`| `TIMESTAMPTZ`| Последний переход (nullable)          | `NULL`  |
 
 ### 🎯 Особенности
 
@@ -149,7 +149,7 @@ CREATE TABLE short_urls (
 ## 🐛 Частые проблемы
 
 | ❌ Проблема | ✅ Решение |
-|-------------|-----------|
+| ------------- | ----------- |
 | `postgres_data [error opening dir]` | `sudo chown -R 999:999 postgres_data` |
 | Slug не генерируется | Проверьте Redis: `docker compose logs redis` |
 | 404 на существующий slug | `docker compose exec api alembic upgrade head` |
