@@ -1,0 +1,15 @@
+{
+    "page_title": "URL Shortener",
+    "title": "🔗 URL Shortener",
+    "label_long_url": "Enter long URL:",
+    "button_shorten": "Shorten URL",
+    "cookie_title": "🍪 We use cookies",
+    "cookie_text": "This site uses cookies to improve service and analytics.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "short_url": "Short URL:",
+    "copy": "Copy",
+    "copied_success": "✓ Copied!",
+    "copy_error": "Failed to copy URL",
+    "times_generated": "This link has been generated <strong>{creation_count}</strong> time(s) 😎👌🔥"
+}

@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from core import get_redis
+from core import get_redis, load_translations_to_cache
 from database import engine
 from database.models import Base
 from routers import router_slug
@@ -16,8 +16,11 @@ async def lifespan(app: FastAPI):
 
     r = get_redis()
     await r.ping()  # type: ignore
+
+    load_translations_to_cache()
     yield
     await engine.dispose()
+
     await r.aclose()
 
 

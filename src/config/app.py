@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .path import BASE_DIR
+from .paths import ENVS_DIR
 
 
 class AppConfig(BaseSettings):
@@ -14,7 +14,7 @@ class AppConfig(BaseSettings):
     api_prefix: Annotated[str, Field(alias="API_PREFIX")] = "/api"
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / "envs" / ".env.app-dev",
+        env_file=ENVS_DIR / ".env.app-dev",
         env_file_encoding="utf-8",
     )
 

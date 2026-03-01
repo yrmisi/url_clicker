@@ -3,7 +3,7 @@ from typing import Annotated
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from .path import BASE_DIR
+from .paths import ENVS_DIR
 
 
 class RedisConfig(BaseSettings):
@@ -17,7 +17,7 @@ class RedisConfig(BaseSettings):
     short_url_window: int = 5
 
     model_config = SettingsConfigDict(
-        env_file=BASE_DIR / "envs" / ".env.redis-prod",
+        env_file=ENVS_DIR / ".env.redis-prod",
         env_file_encoding="utf-8",
         extra="ignore",
     )

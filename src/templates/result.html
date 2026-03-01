@@ -1,0 +1,35 @@
+<!doctype html>
+<div class="result-container" data-component="shorten-result">
+  <strong>{{ short_url }}</strong>
+
+  <div
+    style="
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    "
+  >
+    <a
+      href="{{ data_short_url }}"
+      target="_blank"
+      style="flex-grow: 1; word-break: break-all"
+      data-short-url="{{ data_short_url }}"
+      >{{ data_short_url }}</a
+    >
+    <button
+      id="copyBtn"
+      class="copy-btn"
+      data-short-url="{{ data_short_url }}"
+      data-copied-success="{{ data_copied_success }}"
+      data-copy-error="{{ data_copy_error }}"
+    >
+      📋 {{ copy }}
+    </button>
+  </div>
+
+  <div style="margin-top: 10px; font-size: 0.9em; color: #555">
+    {{ times_generated|safe }}
+  </div>
+</div>
