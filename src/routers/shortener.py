@@ -4,11 +4,9 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends, Query, Request, status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 
 from config import settings
-from config.paths import TEMPLATES_DIR
-from core import translations_cache
+from core import templates, translations_cache
 from database import AsyncSessionDep
 from dependencies import ClickDataDep, rate_limit_short_url
 from exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
@@ -16,22 +14,10 @@ from schemas import SlugCountInfo
 from services import get_long_url, get_slug
 from utils import get_preferred_language
 
-router_slug: APIRouter = APIRouter()
-
-templates = Jinja2Templates(directory=TEMPLATES_DIR)
+router = APIRouter(tags=["Shortener"])
 
 
-@router_slug.get("/", response_class=HTMLResponse)
-async def index(request: Request) -> HTMLResponse:
-    lang = get_preferred_language(request)
-    return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-        context=translations_cache.get(lang),
-    )
-
-
-@router_slug.post(
+@router.post(
     "/short_url",
     response_model=None,
     status_code=status.HTTP_201_CREATED,
@@ -48,7 +34,7 @@ async def generate_slug(
     for attempt in range(5):
         try:
             slug_count: SlugCountInfo = await get_slug(long_url, click_data, session)
-            data_link = settings.app.get_link_count(**asdict(slug_count))
+            data_link: dict[str, int | str] = settings.app.get_link_count(**asdict(slug_count))
 
             if html:
                 lang = get_preferred_language(request)
@@ -82,7 +68,7 @@ async def generate_slug(
     )
 
 
-@router_slug.get("/{slug}")
+@router.get("/{slug}")
 async def redirect_to_url(slug: str, session: AsyncSessionDep) -> RedirectResponse:
     """ """
     try:
