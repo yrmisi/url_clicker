@@ -5,56 +5,27 @@ const submitBtn = document.getElementById("submitBtn");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const longUrl = document.getElementById("longUrl").value.trim();
 
+  const longUrl = document.getElementById("longUrl").value.trim();
   errorDiv.textContent = "";
   resultDiv.innerHTML = "";
   submitBtn.disabled = true;
 
   try {
-    const response = await fetch("/api/short_url", {
+    const response = await fetch("/api/short_url?html=true", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ long_url: longUrl }),
     });
 
-    const data = await response.json();
-
     if (response.ok) {
-      const shortUrl = data.link;
-      const creationCount = data.creation_count; // ← получаем link и creation_count из ручки
-      resultDiv.innerHTML = `
-        <strong>Short URL:</strong>
-        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
-            <a href="${shortUrl}" target="_blank" style="flex-grow: 1; word-break: break-all;">${shortUrl}</a>
-            <button id="copyBtn">📋 Copy</button>
-        </div>
-        <div style="margin-top: 10px; font-size: 0.9em; color: #555;">
-            This link has been generated <strong>${creationCount}</strong> time(s).
-        </div>
-        `;
-      document.getElementById("copyBtn").addEventListener("click", async () => {
-        const success = await copyToClipboard(shortUrl);
-        if (success) {
-          const btn = document.getElementById("copyBtn");
-          btn.textContent = "✓ Copied!";
-          btn.style.background = "#218838";
-          setTimeout(() => {
-            btn.textContent = "📋 Copy";
-            btn.style.background = "#28a745";
-          }, 2000);
-        } else {
-          alert("Failed to copy URL");
-        }
-      });
-    } else if (response.status === 429) {
-      errorDiv.textContent =
-        data.detail ||
-        "You have exceeded your request limit. Please try again later.";
-    } else if (response.status === 422) {
-      errorDiv.textContent = data.detail || "Invalid URL.";
+      // html=true → всегда HTML фрагмент
+      resultDiv.innerHTML = await response.text();
+      attachCopyHandler();
     } else {
-      errorDiv.textContent = data.detail || "Failed to shorten URL.";
+      // Ошибки → всегда JSON
+      const data = await response.json();
+      errorDiv.textContent = data.detail || getErrorMessage(response.status);
     }
   } catch (err) {
     errorDiv.textContent = "Network error. Is the server running?";
@@ -63,3 +34,43 @@ form.addEventListener("submit", async (e) => {
     submitBtn.disabled = false;
   }
 });
+
+function attachCopyHandler() {
+  const copyBtn = document.getElementById("copyBtn");
+  if (copyBtn && !copyBtn.dataset.handlerAttached) {
+    copyBtn.dataset.handlerAttached = "true";
+
+    copyBtn.addEventListener("click", async () => {
+      const shortUrl = copyBtn.dataset.shortUrl;
+      const copiedSuccess = copyBtn.dataset.copiedSuccess || "✓ Copied!";
+      const copyError = copyBtn.dataset.copyError || "Failed to copy URL";
+
+      if (!shortUrl) {
+        alert(copyError);
+        return;
+      }
+
+      const success = await copyToClipboard(shortUrl);
+      if (success) {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = copiedSuccess;  // ← Из бэкенда!
+        copyBtn.style.background = "#218838";
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+          copyBtn.style.background = "#28a745";
+        }, 2000);
+      } else {
+        alert(copyError);  // ← Из бэкенда!
+      }
+    });
+  }
+}
+
+function getErrorMessage(status) {
+  return (
+    {
+      429: "Rate limit exceeded",
+      422: "Invalid URL",
+    }[status] || "Failed to shorten URL"
+  );
+}

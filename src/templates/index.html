@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>URL Shortener</title>
+    <title>{{ page_title }}</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/css/index.css" />
   </head>
   <body>
-    <h1>🔗 URL Shortener</h1>
+    <h1>{{ title }}</h1>
     <form id="urlForm">
-      <label for="longUrl">Enter long URL:</label>
+      <label for="longUrl">{{ label_long_url }}</label>
       <input
         type="url"
         id="longUrl"
@@ -18,7 +18,7 @@
         placeholder="https://example.com/very/long/path"
         required
       />
-      <button type="submit" id="submitBtn">Shorten URL</button>
+      <button type="submit" id="submitBtn">{{ button_shorten }}</button>
     </form>
 
     <div id="error"></div>
@@ -26,14 +26,14 @@
 
     <div id="cookieConsent" class="cookie-banner">
       <div class="cookie-content">
-        <h3>🍪 Мы используем cookies</h3>
-        <p>
-          Этот сайт использует cookies для улучшения работы сервиса и аналитики.
-        </p>
+        <h3>{{ cookie_title }}</h3>
+        <p>{{ cookie_text }}</p>
         <div class="cookie-buttons">
-          <button id="acceptCookies" class="cookie-btn accept">Принять</button>
+          <button id="acceptCookies" class="cookie-btn accept">
+            {{ accept }}
+          </button>
           <button id="declineCookies" class="cookie-btn decline">
-            Отклонить
+            {{ decline }}
           </button>
         </div>
       </div>
