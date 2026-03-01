@@ -1,23 +1,39 @@
 from dataclasses import asdict
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, status
+from fastapi import APIRouter, Body, Depends, Query, Request, status
 from fastapi.exceptions import HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 
 from config import settings
+from config.paths import TEMPLATES_DIR
+from core import translations_cache
 from database import AsyncSessionDep
 from dependencies import ClickDataDep, rate_limit_short_url
 from exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
-from schemas import ShortUrlResponse, SlugCountInfo
+from schemas import SlugCountInfo
 from services import get_long_url, get_slug
+from utils import get_preferred_language
 
 router_slug: APIRouter = APIRouter()
+
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
+
+
+@router_slug.get("/", response_class=HTMLResponse)
+async def index(request: Request) -> HTMLResponse:
+    lang = get_preferred_language(request)
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context=translations_cache.get(lang),
+    )
 
 
 @router_slug.post(
     "/short_url",
-    response_model=ShortUrlResponse,
+    response_model=None,
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(rate_limit_short_url)],
 )
@@ -25,12 +41,29 @@ async def generate_slug(
     long_url: Annotated[str, Body(embed=True)],
     click_data: ClickDataDep,
     session: AsyncSessionDep,
-) -> dict[str, str | int]:
+    request: Request,
+    html: Annotated[bool, Query()] = False,
+) -> HTMLResponse | dict[str, str | int]:
     """The router receives the website address, generates and returns a short link."""
     for attempt in range(5):
         try:
             slug_count: SlugCountInfo = await get_slug(long_url, click_data, session)
-            return settings.app.get_link_count(**asdict(slug_count))
+            data_link = settings.app.get_link_count(**asdict(slug_count))
+
+            if html:
+                lang = get_preferred_language(request)
+                ctx: dict[str, str] = translations_cache.get(lang, translations_cache["en"]).copy()
+                ctx["times_generated"] = ctx["times_generated"].format(
+                    creation_count=data_link["creation_count"]
+                )
+                ctx["data_short_url"] = str(data_link["link"])
+
+                return templates.TemplateResponse(
+                    request=request,
+                    name="result.html",
+                    context=ctx,
+                )
+            return data_link
         except SlugAlreadyExistsDBError:
             if attempt == 4:
                 raise HTTPException(
