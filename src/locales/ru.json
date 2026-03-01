@@ -1,0 +1,15 @@
+{
+    "page_title": "Шортенер - Сокращение ссылок",
+    "title": "🔗 Шортенер",
+    "label_long_url": "Введите URL-адрес:",
+    "button_shorten": "Создать ссылку",
+    "cookie_title": "🍪 Мы используем cookies",
+    "cookie_text": "Этот сайт использует cookies для улучшения работы сервиса и аналитики.",
+    "accept": "Принять",
+    "decline": "Отклонить",
+    "short_url": "Короткая ссылка:",
+    "copy": "Копировать",
+    "data_copied_success": "✓ Скопировано!",
+    "data_copy_error": "Не удалось скопировать ссылку",
+    "times_generated": "Ссылка создана <strong>{creation_count}</strong> раз(а) 😎👌🔥"
+}
