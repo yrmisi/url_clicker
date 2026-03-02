@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from core import get_redis, load_translations_to_cache
 from database import engine
 from database.models import Base
-from routers import router_slug
+from routers import router_health, router_root, router_shortener
 
 
 @asynccontextmanager
@@ -24,26 +24,9 @@ async def lifespan(app: FastAPI):
     await r.aclose()
 
 
-app = FastAPI(title="URL Shortener", lifespan=lifespan, root_path="/api")
+app = FastAPI(title="URL Shortener", lifespan=lifespan)
 
 
-@app.get("/health")
-async def health_check() -> dict[str, str]:
-    """Website health check."""
-    return {"status": "ok"}
-
-
-app.include_router(router=router_slug)
-
-
-# app.mount(
-#     "/static",
-#     StaticFiles(directory=Path(__file__).resolve().parent / "static"),
-#     name="static",
-# )
-
-
-# @app.get("/")
-# async def index():
-#     """ """
-#     return RedirectResponse(url="/static/index.html")
+app.include_router(router=router_root)
+app.include_router(router=router_health)
+app.include_router(router=router_shortener, prefix="/api")
