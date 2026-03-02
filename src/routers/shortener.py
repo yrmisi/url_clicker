@@ -8,11 +8,10 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from config import settings
 from core import templates, translations_cache
 from database import AsyncSessionDep
-from dependencies import ClickDataDep, rate_limit_short_url
+from dependencies import ClickDataDep, LanguageDep, rate_limit_short_url
 from exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
 from schemas import SlugCountInfo
 from services import get_long_url, get_slug
-from utils import get_preferred_language
 
 router = APIRouter(tags=["Shortener"])
 
@@ -27,6 +26,7 @@ async def generate_slug(
     long_url: Annotated[str, Body(embed=True)],
     click_data: ClickDataDep,
     session: AsyncSessionDep,
+    lang: LanguageDep,
     request: Request,
     html: Annotated[bool, Query()] = False,
 ) -> HTMLResponse | dict[str, str | int]:
@@ -37,7 +37,6 @@ async def generate_slug(
             data_link: dict[str, int | str] = settings.app.get_link_count(**asdict(slug_count))
 
             if html:
-                lang = get_preferred_language(request)
                 ctx: dict[str, str] = translations_cache.get(lang, translations_cache["en"]).copy()
                 ctx["times_generated"] = ctx["times_generated"].format(
                     creation_count=data_link["creation_count"]
