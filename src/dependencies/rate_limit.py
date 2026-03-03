@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, Request
+from fastapi.datastructures import Address
 from redis.asyncio import Redis
 
 from config import settings
@@ -15,7 +16,6 @@ def get_rate_limiter(r: Annotated[Redis, Depends(get_redis)]) -> RateLimiter:
 
 
 def rate_limiter_factory(
-    endpoint: str,
     max_requests: int,
     window_seconds: int,
 ):
@@ -24,13 +24,14 @@ def rate_limiter_factory(
         rate_limiter: Annotated[RateLimiter, Depends(get_rate_limiter)],
     ) -> None:
 
-        client = request.client
+        client: Address | None = request.client
         if client is None:
             return
 
-        ip_address = request.headers.get("x-forwarded-for", client.host).split(",")[0].strip()
+        ip_address: str = request.headers.get("x-forwarded-for", client.host).split(",")[0].strip()
+        endpoint: str = request.url.path.strip("/").split("/")[-1]
 
-        exceeded = await rate_limiter.is_limited(
+        exceeded: bool = await rate_limiter.is_limited(
             ip_address,
             endpoint,
             max_requests,
@@ -45,8 +46,7 @@ def rate_limiter_factory(
     return dependency
 
 
-rate_limit_short_url = rate_limiter_factory(
-    "short_url",
-    settings.redis_db.short_url_limit,
-    settings.redis_db.short_url_window,
+rate_limit_url = rate_limiter_factory(
+    settings.redis.url_limit,
+    settings.redis.url_window,
 )

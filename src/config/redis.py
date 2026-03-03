@@ -13,7 +13,7 @@ class RedisConfig(BaseSettings):
     host: Annotated[str, Field(alias="REDIS_HOST")] = "localhost"
     port: Annotated[int, Field(alias="REDIS_PORT")] = 6379
     db: int = 0
-    short_url_limit: int = 3
+    url_limit: int = 3
     short_url_window: int = 5
 
     model_config = SettingsConfigDict(

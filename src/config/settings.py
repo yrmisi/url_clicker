@@ -13,7 +13,7 @@ class Settings(BaseModel):
 
     db: DataBaseConfig = DataBaseConfig()
     dbtest: DataBaseTestConfig = DataBaseTestConfig()
-    redis_db: RedisConfig = RedisConfig()
+    redis: RedisConfig = RedisConfig()
     redis_test: RedisTestConfig = RedisTestConfig()
     abm: AlembicMigrationConfig = AlembicMigrationConfig()
     app: AppConfig = AppConfig()

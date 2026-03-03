@@ -9,8 +9,8 @@ from config import settings
 def get_redis() -> Redis:
     """ """
     return Redis(
-        host=settings.redis_db.host,
-        port=settings.redis_db.port,
-        db=settings.redis_db.db,
-        password=settings.redis_db.password,
+        host=settings.redis.host,
+        port=settings.redis.port,
+        db=settings.redis.db,
+        password=settings.redis.password,
     )

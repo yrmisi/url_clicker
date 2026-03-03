@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from config import settings
 from core import templates, translations_cache
 from database import AsyncSessionDep
-from dependencies import ClickDataDep, LanguageDep, rate_limit_short_url
+from dependencies import ClickDataDep, LanguageDep, rate_limit_url
 from exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError, UnexpectedError
 from schemas import SlugCountInfo
 from services import get_long_url, get_slug
@@ -19,7 +19,7 @@ router = APIRouter(tags=["Shortener"])
     "/short_url",
     response_model=None,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(rate_limit_short_url)],
+    dependencies=[Depends(rate_limit_url)],
 )
 async def generate_slug(
     long_url: Annotated[str, Body(embed=True)],
@@ -46,6 +46,7 @@ async def generate_slug(
                     request=request,
                     name="result.html",
                     context=ctx,
+                    status_code=status.HTTP_201_CREATED,
                 )
             return data_link
         except SlugAlreadyExistsDBError:
@@ -57,8 +58,14 @@ async def generate_slug(
     raise UnexpectedError()
 
 
-@router.get("/{slug}")
-async def redirect_to_url(slug: str, session: AsyncSessionDep) -> RedirectResponse:
+@router.get(
+    "/{slug}",
+    dependencies=[Depends(rate_limit_url)],
+)
+async def redirect_to_url(
+    slug: str,
+    session: AsyncSessionDep,
+) -> RedirectResponse:
     """ """
     try:
         url: str = await get_long_url(slug, session)
