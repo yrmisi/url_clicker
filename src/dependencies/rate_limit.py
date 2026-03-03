@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Request, status
+from fastapi import Depends, Request
 from redis.asyncio import Redis
 
 from config import settings
 from core import get_redis
+from exceptions import RateLimitExceededError
 from services import RateLimiter
 
 
@@ -36,14 +37,9 @@ def rate_limiter_factory(
             window_seconds,
         )
         if exceeded:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=f"You have exceeded your request limit. Please try again in {window_seconds} seconds.",
-                headers={
-                    "Retry-After": str(window_seconds),
-                    "X-RateLimit-Limit": str(max_requests),
-                    "X-RateLimit-Remaining": "0",
-                },
+            raise RateLimitExceededError(
+                window_seconds,
+                max_requests,
             )
 
     return dependency

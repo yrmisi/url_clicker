@@ -2,14 +2,13 @@ from dataclasses import asdict
 from typing import Annotated
 
 from fastapi import APIRouter, Body, Depends, Query, Request, status
-from fastapi.exceptions import HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from config import settings
 from core import templates, translations_cache
 from database import AsyncSessionDep
 from dependencies import ClickDataDep, LanguageDep, rate_limit_short_url
-from exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError
+from exceptions import InvalidURLError, NoLongFoundError, SlugAlreadyExistsDBError, UnexpectedError
 from schemas import SlugCountInfo
 from services import get_long_url, get_slug
 
@@ -51,20 +50,11 @@ async def generate_slug(
             return data_link
         except SlugAlreadyExistsDBError:
             if attempt == 4:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail="Failed to generate unique slug after 5 attempts",
-                )
+                raise
         except InvalidURLError:
-            raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail="invalid URL",
-            )
+            raise
     # Этот код недостижим, но успокаивает Pylance
-    raise HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail="Unexpected error",
-    )
+    raise UnexpectedError()
 
 
 @router.get("/{slug}")
@@ -73,5 +63,5 @@ async def redirect_to_url(slug: str, session: AsyncSessionDep) -> RedirectRespon
     try:
         url: str = await get_long_url(slug, session)
     except NoLongFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The link does not exist")
+        raise
     return RedirectResponse(url=url, status_code=status.HTTP_302_FOUND)

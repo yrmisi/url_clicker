@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from core import get_redis, load_translations_to_cache
 from database import engine
 from database.models import Base
+from exceptions import ShortenerBaseError, shortener_exception_handler
 from routers import router_health, router_root, router_shortener
 
 
@@ -26,6 +27,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="URL Shortener", lifespan=lifespan)
 
+app.add_exception_handler(ShortenerBaseError, shortener_exception_handler)
 
 app.include_router(router=router_root)
 app.include_router(router=router_health)
