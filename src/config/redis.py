@@ -14,7 +14,7 @@ class RedisConfig(BaseSettings):
     port: Annotated[int, Field(alias="REDIS_PORT")] = 6379
     db: int = 0
     url_limit: int = 3
-    short_url_window: int = 5
+    url_window: int = 5
 
     model_config = SettingsConfigDict(
         env_file=ENVS_DIR / ".env.redis-prod",
