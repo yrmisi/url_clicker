@@ -11,7 +11,8 @@ from routers import router_health, router_root, router_shortener
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """ """
+    """Lifespan for the application."""
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
