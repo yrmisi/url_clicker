@@ -48,8 +48,18 @@ EXPOSE 8000
 
 ENTRYPOINT [ "/app/scripts/entrypoint.sh" ]
 
-CMD ["granian", "--interface", "asgi", "main:app", \
-    "--workers", "2", \
-    "--host", "0.0.0.0", \
-    "--port", "8000", \
-    "--access-log"]
+CMD ["granian", "main:app", \
+     "--interface", "asgi", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
+     "--workers", "2", \
+     "--runtime-threads", "1", \
+     "--loop", "uvloop", \
+     "--backlog", "1024", \
+     "--backpressure", "128", \
+     "--workers-max-rss", "512", \
+     "--rss-samples", "3", \
+     "--rss-sample-interval", "10s", \
+     "--workers-lifetime", "1h", \
+     "--log-level", "warning", \
+     "--access-log"]
