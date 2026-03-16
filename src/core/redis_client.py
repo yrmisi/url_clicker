@@ -7,7 +7,8 @@ from config import settings
 
 @lru_cache
 def get_redis() -> Redis:
-    """ """
+    """Return a cached Redis client instance configured from application settings."""
+
     return Redis(
         host=settings.redis.host,
         port=settings.redis.port,
