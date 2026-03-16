@@ -14,7 +14,8 @@ async def add_slug_db(
     click_data: ClickDataDep,
     session: AsyncSessionDep,
 ) -> None:
-    """ """
+    """Persist a new short slug, its long URL, and click metadata to the database."""
+
     short_url: ShortURL = ShortURL(slug=slug, long_url=long_url)
     session.add(short_url)
     try:
