@@ -11,4 +11,5 @@ URL_REGEX = re.compile(
 
 
 def is_valid_url(url: str) -> bool:
+    """Return True if the given string fully matches ``URL_REGEX``."""
     return bool(URL_REGEX.fullmatch(url))
