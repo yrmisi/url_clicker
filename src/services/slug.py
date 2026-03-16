@@ -11,7 +11,7 @@ async def get_slug(
     click_data: ClickDataDep,
     session: AsyncSessionDep,
 ) -> SlugCountInfo:
-    """ """
+    """Return slug and creation count for the given URL, creating a new slug if needed."""
     cleaned_url = url.strip().rstrip("/")
 
     if not is_valid_url(cleaned_url):
