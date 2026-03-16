@@ -7,7 +7,8 @@ from ..models import ShortURL
 
 
 async def get_long_url_by_slug_db(slug: str, session: AsyncSessionDep) -> str | None:
-    """ """
+    """Return the long URL associated with the given slug, or None if it is not found in the database."""
+
     # query = select(ShortURL).where(ShortURL.slug==slug)
     query = select(ShortURL).filter_by(slug=slug)
     short_url: ShortURL | None = (await session.execute(query)).scalar_one_or_none()
