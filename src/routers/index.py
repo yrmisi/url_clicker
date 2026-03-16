@@ -9,7 +9,7 @@ router = APIRouter(tags=["System "])
 
 @router.get("/", response_class=HTMLResponse)
 async def index(request: Request, lang: LanguageDep) -> HTMLResponse:
-    """Start page."""
+    """Render the localized start page using the requested language."""
     return templates.TemplateResponse(
         request=request,
         name="index.html",
