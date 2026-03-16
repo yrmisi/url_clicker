@@ -15,6 +15,8 @@ class RedisConfig(BaseSettings):
     db: int = 0
     url_limit: int = 3
     url_window: int = 5
+    max_connections: Annotated[int, Field(alias="REDIS_MAX_CONNECTIONS")] = 10
+    health_check_interval: Annotated[int, Field(alias="REDIS_HEALTH_CHECK_INTERVAL")] = 0
 
     model_config = SettingsConfigDict(
         env_file=ENVS_DIR / ".env.redis-prod",

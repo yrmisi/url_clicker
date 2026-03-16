@@ -14,4 +14,6 @@ def get_redis() -> Redis:
         port=settings.redis.port,
         db=settings.redis.db,
         password=settings.redis.password,
+        max_connections=settings.redis.max_connections,
+        health_check_interval=settings.redis.health_check_interval,
     )
