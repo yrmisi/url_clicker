@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class ShortURL(Base):
-    """ """
+    """Database model representing a shortened URL and its associated metadata."""
 
     __tablename__ = "short_urls"
 
