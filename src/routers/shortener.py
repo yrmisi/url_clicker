@@ -66,7 +66,7 @@ async def redirect_to_url(
     slug: str,
     session: AsyncSessionDep,
 ) -> RedirectResponse:
-    """ """
+    """Redirect the client to the original long URL associated with the given slug."""
     try:
         url: str = await get_long_url(slug, session)
     except NoLongFoundError:
