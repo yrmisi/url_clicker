@@ -11,7 +11,7 @@ from services import RateLimiter
 
 
 def get_rate_limiter(r: Annotated[Redis, Depends(get_redis)]) -> RateLimiter:
-    """ """
+    """Create a RateLimiter instance using the injected Redis client."""
     return RateLimiter(r)
 
 
@@ -19,10 +19,13 @@ def rate_limiter_factory(
     max_requests: int,
     window_seconds: int,
 ):
+    """Return a dependency that enforces rate limiting with the given window and limit."""
+
     async def dependency(
         request: Request,
         rate_limiter: Annotated[RateLimiter, Depends(get_rate_limiter)],
     ) -> None:
+        """Raise RateLimitExceededError if the client exceeds the allowed request rate."""
 
         client: Address | None = request.client
         if client is None:
