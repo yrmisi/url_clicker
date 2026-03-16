@@ -4,7 +4,6 @@ from fastapi import FastAPI
 
 from core import get_redis, load_translations_to_cache
 from database import engine
-from database.models import Base
 from exceptions import ShortenerBaseError, shortener_exception_handler
 from routers import router_health, router_root, router_shortener
 
@@ -13,8 +12,9 @@ from routers import router_health, router_root, router_shortener
 async def lifespan(app: FastAPI):
     """Lifespan for the application."""
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    # использовать для dev. в prod использовать Alembic-миграции
+    # async with engine.begin() as conn:
+    #     await conn.run_sync(Base.metadata.create_all)
 
     r = get_redis()
     await r.ping()  # type: ignore
