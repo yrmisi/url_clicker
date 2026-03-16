@@ -4,24 +4,21 @@ from config import settings
 
 engine = create_async_engine(
     settings.db.url_sqal_pg_async,
-    pool_size=10,  # базовое количество открытых соединений
-    max_overflow=0,  # 0 для безопасности (не превышать лимит пула), 5 - макс. доп. соединений сверх pool_size
-    pool_pre_ping=True,  # проверяет соединение перед использованием (избегает "broken pipe")
-    pool_recycle=300,  # пересоздавать соединение каждые 5 минут (в секундах)
-    pool_timeout=10,  # макс. время ожидания свободного соединения из пула
-    # echo=False,  # отключить лог SQL (важно в production)
+    pool_size=settings.db.pool_size,
+    max_overflow=settings.db.max_overflow,
+    pool_pre_ping=settings.db.pool_pre_ping,
+    pool_recycle=settings.db.pool_recycle,
+    pool_timeout=settings.db.pool_timeout,
+    echo=settings.db.echo,
     connect_args={
-        "command_timeout": 15,  # таймаут выполнения запроса (в секундах)
-        "prepared_statement_cache_size": (
-            0
-        ),  # отключить для PgBouncer, 100 - кэш prepared statements (только для asyncpg)
-        "statement_cache_size": 0,  # отключить для PgBouncer, 100 - кэш запросов
-        # "server_settings": {"jit": "off"},  # отключить JIT (часто замедляет OLTP)
+        "command_timeout": settings.db.command_timeout,
+        "prepared_statement_cache_size": settings.db.prepared_statement_cache_size,
+        "statement_cache_size": settings.db.statement_cache_size,
     },
     # execution_options для PgBouncer
     execution_options={
-        "isolation_level": "AUTOCOMMIT",  # Для transaction pool_mode!
-        "compiled_cache": None,  # Очистка кэша
+        "isolation_level": settings.db.isolation_level,
+        "compiled_cache": settings.db.compiled_cache,
     },
 )
 
