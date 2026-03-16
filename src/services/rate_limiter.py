@@ -5,7 +5,8 @@ from redis.asyncio import Redis
 
 
 class RateLimiter:
-    def __init__(self, redis: Redis):
+    def __init__(self, redis: Redis) -> None:
+        """Initialize a rate limiter with the given Redis client."""
         self._redis = redis
 
     async def is_limited(
@@ -15,7 +16,7 @@ class RateLimiter:
         max_requests: int,
         window_seconds: int,
     ) -> bool:
-        """ """
+        """Return True if the IP has exceeded the max requests for the endpoint within the time window."""
         key: str = f"rate_limiter:{endpoint}:{ip_address}"
         current_ms = time() * 1_000
         window_start_ms = current_ms - window_seconds * 1_000
