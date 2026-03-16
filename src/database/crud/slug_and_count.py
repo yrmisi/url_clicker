@@ -10,7 +10,8 @@ async def get_slug_and_count_by_long_url_db(
     long_url: str,
     session: AsyncSessionDep,
 ) -> SlugCountInfo | None:
-    """ """
+    """Return slug and its creation count for the given long URL, or None if it does not exist."""
+
     query = select(ShortURL).filter_by(long_url=long_url)
     short_url: ShortURL | None = (await session.execute(query)).scalar_one_or_none()
 
