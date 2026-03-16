@@ -7,7 +7,8 @@ from .db_config import AsyncSessionLocal
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    """ """
+    """Yield an asynchronous SQLAlchemy session within a managed context."""
+
     async with AsyncSessionLocal() as async_session:
         yield async_session
 
