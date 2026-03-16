@@ -22,7 +22,7 @@ class RateLimiter:
         window_start_ms = current_ms - window_seconds * 1_000
         current_request = f"{current_ms}-{random.randint(0, 100_000)}"
 
-        async with self._redis.pipeline() as pipe:
+        async with self._redis.pipeline() as pipe:  # pyright: ignore[reportGeneralTypeIssues]
             await pipe.zremrangebyscore(key, 0, window_start_ms)
             await pipe.zcard(key)
             await pipe.zadd(key, {current_request: current_ms})
