@@ -5,11 +5,14 @@ from redis.asyncio import Redis
 
 from config import settings
 
+from .redis_script import RATE_LIMIT_SCRIPT
+
 
 class RateLimiter:
     def __init__(self, redis: Redis) -> None:
         """Initialize a rate limiter with the given Redis client."""
         self._redis = redis
+        self._script = self._redis.register_script(RATE_LIMIT_SCRIPT)
 
     async def is_limited(
         self,
@@ -24,18 +27,20 @@ class RateLimiter:
             endpoint=endpoint,
             ip_address=ip_address,
         )
-        current_ms = time() * 1_000
-        window_start_ms = current_ms - window_seconds * 1_000
-        current_request = f"{current_ms}-{random.randint(0, 100_000)}"
+        now_ms: int = int(time() * 1000)
+        window_start_ms: int = now_ms - (window_seconds * 1000)
+        member: str = f"{now_ms}-{random.randint(0, 100_000)}"
 
-        async with self._redis.pipeline() as pipe:  # pyright: ignore[reportGeneralTypeIssues]
-            await pipe.zremrangebyscore(key, 0, window_start_ms)
-            await pipe.zcard(key)
-            await pipe.zadd(key, {current_request: current_ms})
-            await pipe.expire(key, window_seconds)
-
-            res = await pipe.execute()
-
-        _, current_count, _, _ = res
-
-        return current_count >= max_requests
+        result: int = int(
+            await self._script(
+                keys=[key],
+                args=[
+                    now_ms,
+                    window_start_ms,
+                    max_requests,
+                    member,
+                    window_seconds,
+                ],
+            )
+        )
+        return bool(result)
