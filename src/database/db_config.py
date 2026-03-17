@@ -10,16 +10,9 @@ engine = create_async_engine(
     pool_recycle=settings.db.pool_recycle,
     pool_timeout=settings.db.pool_timeout,
     echo=settings.db.echo,
-    connect_args={
-        "command_timeout": settings.db.command_timeout,
-        "prepared_statement_cache_size": settings.db.prepared_statement_cache_size,
-        "statement_cache_size": settings.db.statement_cache_size,
-    },
+    connect_args=settings.db.get_connect_args,
     # execution_options для PgBouncer
-    execution_options={
-        "isolation_level": settings.db.isolation_level,
-        "compiled_cache": settings.db.compiled_cache,
-    },
+    execution_options=settings.db.get_execution_options,
 )
 
 AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)

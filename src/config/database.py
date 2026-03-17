@@ -50,3 +50,20 @@ class DataBaseConfig(BaseSettings):
             port=self.port,
             database=self.name,
         )
+
+    @property
+    def get_connect_args(self) -> dict[str, int]:
+        """ """
+        return {
+            "command_timeout": self.command_timeout,
+            "prepared_statement_cache_size": self.prepared_statement_cache_size,
+            "statement_cache_size": self.statement_cache_size,
+        }
+
+    @property
+    def get_execution_options(self) -> dict[str, str | dict | None]:
+        """ """
+        return {
+            "isolation_level": self.isolation_level,
+            "compiled_cache": self.compiled_cache,
+        }
