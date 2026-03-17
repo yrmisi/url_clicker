@@ -12,6 +12,7 @@ class AppConfig(BaseSettings):
     scheme: Annotated[str, Field(alias="SCHEME")] = "http"
     domain: Annotated[str, Field(alias="DOMAIN")] = "localhost"
     api_prefix: Annotated[str, Field(alias="API_PREFIX")] = "/api"
+    slug_length: int = 6
 
     model_config = SettingsConfigDict(
         env_file=ENVS_DIR / ".env.app-dev",
